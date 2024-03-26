@@ -1,0 +1,38 @@
+# Age-specific death rates from chronic obstructive pulmonary disease (COPD) in 2019 for the United States and Uganda
+death_rates = {
+    'Age Groups': ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'],
+    'US': [0.04, 0.02, 0.02, 0.02, 0.06, 0.11, 0.29, 0.56, 1.42, 4.00, 14.13, 37.22, 66.48, 108.66, 213.10, 333.06, 491.10, 894.45],
+    'Uganda': [0.40, 0.17, 0.07, 0.23, 0.38, 0.40, 0.75, 1.11, 2.04, 5.51, 13.26, 33.25, 69.62, 120.78, 229.88, 341.06, 529.31, 710.40]
+}
+
+# WHO Standard Population distribution by age group (in thousands)
+who_standard_population = [94504, 90086, 85672, 84464, 83737, 84203, 83345, 80905, 78422, 73853, 70553, 64484, 52741, 42964, 30057, 17349, 7747, 3182]
+
+# Function to calculate crude death rate
+def calculate_crude_death_rate(death_rates, country):
+    total_deaths_per_100k = sum(death_rates[country])
+    # Assuming each age group represents an equal portion of the population, which is a simplification
+    crude_death_rate = total_deaths_per_100k / len(death_rates['Age Groups'])
+    return round(crude_death_rate, 1)
+
+# Function to calculate age-standardized death rate
+def calculate_age_standardized_death_rate(death_rates, who_standard_population, country):
+    total_population = sum(who_standard_population)
+    weighted_deaths = sum(death_rate * population for death_rate, population in zip(death_rates[country], who_standard_population))
+    age_standardized_death_rate = (weighted_deaths / total_population) * 100000  # Adjust to per 100,000 people scale
+    return round(age_standardized_death_rate, 1)
+
+# Calculate crude and age-standardized death rates for the United States and Uganda
+results = {
+    'United States': {
+        'Crude Death Rate': calculate_crude_death_rate(death_rates, 'US'),
+        'Age-Standardized Death Rate': calculate_age_standardized_death_rate(death_rates, who_standard_population, 'US')
+    },
+    'Uganda': {
+        'Crude Death Rate': calculate_crude_death_rate(death_rates, 'Uganda'),
+        'Age-Standardized Death Rate': calculate_age_standardized_death_rate(death_rates, who_standard_population, 'Uganda')
+    }
+}
+
+results
+
